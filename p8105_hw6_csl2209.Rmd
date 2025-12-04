@@ -125,8 +125,50 @@ library(p8105.datasets)
 data("weather_df")
 ```
 
+The boostrap is helpful when you’d like to perform inference for a parameter / value / summary that doesn’t have an easy-to-write-down distribution in the usual repeated sampling framework. We’ll focus on a simple linear regression with tmax as the response with tmin and prcp as the predictors, and are interested in the distribution of two quantities estimated from these data
+
+model 
+
+```{r}
+fit = lm(tmax ~ tmin + prcp, data = weather_df)
+
+fit |> 
+  broom::glance()
+```
+
+
+```{r}
+boot_sample = function(df) {
+  sample_frac(df, replace = TRUE)
+}
+```
 
 Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of these two quantities. 
+
+```{r}
+boot_sample_estimate = function(df) {
+
+  # take bootstrap sample
+  boot_df = boot_sample(df)
+
+  # fit model
+  fit = lm(tmax ~ tmin + prcp, data = boot_df)
+
+  # extract R^2
+  r2 = broom::glance(fit)$r.squared
+
+  # extract beta1 and beta2
+  coef_df = broom::tidy(fit)
+  beta1 = coef_df |> filter(term == "tmin") |> pull(estimate)
+  beta2 = coef_df |> filter(term == "prcp") |> pull(estimate)
+
+  tibble(
+    r2 = r2,
+    beta_product = beta1 / beta2
+  )
+}
+
+```
 
 Plot the distribution of your estimates, and describe these in words. 
 
