@@ -120,6 +120,8 @@ city_OR |>
 
 ```
 
+**Albuquerque has the largest OR and the largest CI range. New York has the lowest CI range, and the lowest OR for homicide resolution (men vs. women).**
+
 ## Problem 2
 
 ```{r}
@@ -187,6 +189,10 @@ ggplot(boot_results, aes(x = beta_product)) +
   geom_density(fill = "red", alpha = 0.5) +
   labs(title = "Bootstrap Distribution of β1/β2")
 ```
+
+**The distribution of R^2 values is fairly symmetrical and centered with a minimal skew to the right. These features suggest a normal distribution of R^2 values.**
+
+**The distribution of B1/B2 is skewed to the right, and has a heavy tail extending to low values. These features may be related to the frequency with which large outliers are included in the bootstrap sample.**
 
 Using the 5000 bootstrap estimates, identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval for r^2 and β^1β^2.
 
@@ -354,3 +360,4 @@ cv_df |>
   )
 ```
 
+**In the scatterplots comparing blength and bwt, we see that MLR and Age fit are pretty similar, while interaction fit has more variance. Though the interaction model has the smallest RMSE and the highest r. squared, it has a lot variables, making it the least ideal in terms of parsimony. The mlr and age models are very similar to the interaction fit with less variance and less variables, making these models practical in terms of parsimony.**
