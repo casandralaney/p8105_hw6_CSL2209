@@ -170,14 +170,33 @@ boot_sample_estimate = function(df) {
   )
 }
 
+boot_results = tibble(rep = 1:5000) |> 
+  mutate(stats = map(rep, ~ boot_sample_estimate(weather_df))) |> 
+  unnest(stats)
 ```
 
 Plot the distribution of your estimates, and describe these in words. 
 
+```{r}
+ggplot(boot_results, aes(x = r2)) +
+  geom_density(fill = "blue", alpha = 0.5) +
+  labs(title = "Bootstrap Distribution of R²")
+
+# β1/β2 distribution
+ggplot(boot_results, aes(x = beta_product)) +
+  geom_density(fill = "red", alpha = 0.5) +
+  labs(title = "Bootstrap Distribution of β1/β2")
+```
+
 Using the 5000 bootstrap estimates, identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval for r^2 and β^1β^2.
 
 ```{r}
-
+boot_results |> 
+  summarize(
+    across(c(r2, beta_product), 
+           list(ci_lower = ~ quantile(., 0.025),
+                ci_upper = ~ quantile(., 0.975)))
+  )
 ```
 
 ## Problem 3
